@@ -27,9 +27,9 @@
 
 ;GPT LLM use case:
 (= (vibe)
-   (vibe (library lib_vibespace curriculum.metta) (read_line_to_string user_input)))
+   (vibe (library curriculum.metta) (read_line_to_string user_input)))
 (= (vibe $instruction)
-   (vibe (library lib_vibespace curriculum.metta) $instruction))
+   (vibe (library curriculum.metta) $instruction))
 (= (vibe $curriculum $instruction)
    (let* (;2. Context variables to be included in the prompt:
           ($_ (translatePredicate (read_file_to_string $curriculum $howto ())))
