@@ -4,9 +4,6 @@
 !(import_prolog_function split_string)
 !(import_prolog_function atomic_list_concat)
 !(import_prolog_function string_concat)
-!(import! &self (library lib_import))
-!(git-import! "https://github.com/patham9/petta_lib_snapshot.git")
-!(import! &self (library lib_snapshot))
 
 ;Helper to escape newlines for valid request:
 (= (newlinify $str)
@@ -30,11 +27,7 @@
 
 ;GPT LLM use case:
 (= (vibestep)
-   (let* (;1. Snapshot and immediate context restore
-          ($_ (Snapshot)) ;restoring some lib_llm context that gets lost as it resides in Python:
-		  ($_ (py-eval "setattr(__import__('builtins'),'apply_kwargs',(lambda f,d: f(**d))) or 0"))
-		  ($_ (py-eval "setattr(__import__('builtins'),'index', (lambda o,i: o[i])) or 0"))
-		  ;2. Context variables to be included in the prompt:
+   (let* (;2. Context variables to be included in the prompt:
           ($_ (translatePredicate (read_file_to_string (library lib_vibespace curriculum.metta) $howto ())))
           ($instruction (read_line_to_string user_input))
           ($currentSpace (repr (collapse (get-atoms &space))))
