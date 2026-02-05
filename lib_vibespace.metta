@@ -26,11 +26,13 @@
        ((assertionSuccess: False) (result: $a))))
 
 ;GPT LLM use case:
-(= (vibestep)
-   (vibestep curriculum.metta)
-(= (vibestep $curriculum)
+(= (vibe)
+   (vibe (library lib_vibespace curriculum.metta) (read_line_to_string user_input)))
+(= (vibe $instruction)
+   (vibe (library lib_vibespace curriculum.metta) $instruction))
+(= (vibe $curriculum $instruction)
    (let* (;2. Context variables to be included in the prompt:
-          ($_ (translatePredicate (read_file_to_string (library lib_vibespace $curriculum) $howto ())))
+          ($_ (translatePredicate (read_file_to_string $curriculum $howto ())))
           ($instruction (read_line_to_string user_input))
           ($currentSpace (repr (collapse (get-atoms &space))))
           ($howtostr (newlinify $howto))
