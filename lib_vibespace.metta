@@ -4,10 +4,17 @@
 !(import_prolog_function split_string)
 !(import_prolog_function atomic_list_concat)
 !(import_prolog_function string_concat)
+!(let $file (library curriculum.metta)
+      (progn (translatePredicate (exists_file $file))
+             (translatePredicate (read_file_to_string $file $howtocode ()))
+             (add-atom &curriculum (curriculum $howtocode))))
+
+(= (str-replace $str $a $b)
+   (atomic_list_concat (split_string $str $a "") $b))
 
 ;Helper to escape newlines for valid request:
 (= (newlinify $str)
-   (atomic_list_concat (split_string $str "\n" "") "\\n"))
+   (str-replace (str-replace $str "\"\"" "'") "\n" "\\n"))
 
 ;Functions to save and restore session context:
 !(add-atom &context (context ""))
@@ -25,16 +32,13 @@
        ((assertionSuccess: True) (result: $a))
        ((assertionSuccess: False) (result: $a))))
 
-;GPT LLM use case:
+;Vibe coder in the atom space:
 (= (vibe)
-   (vibe (library curriculum.metta) (read_line_to_string user_input)))
+   (vibe (read_line_to_string user_input)))
 (= (vibe $instruction)
-   (vibe (library curriculum.metta) $instruction))
-(= (vibe $curriculum $instruction)
    (let* (;2. Context variables to be included in the prompt:
-          ($_ (translatePredicate (read_file_to_string $curriculum $howto ())))
-          ($instruction (read_line_to_string user_input))
-          ($currentSpace (repr (collapse (get-atoms &space))))
+          ($howto (match &curriculum (curriculum $x) $x))
+          ($currentSpace (newlinify (repr (collapse (get-atoms &self)))))
           ($howtostr (newlinify $howto))
           ($history (get-context))
           ;3. Ask GPT to generate MeTTa code:
